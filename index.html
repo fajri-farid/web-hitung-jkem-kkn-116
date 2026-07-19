@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kalkulator otomatis JKEM dari data logbook KKN Universitas Hasanuddin.">
+    <title>Hitung JKEM — SIPBPM UNHAS</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<main class="shell">
+    <header class="masthead">
+        <div class="brand"><span class="brand-mark">J</span><div><small>SIPBPM UNHAS</small>Hitung JKEM</div></div>
+        <div class="privacy-note">Data diproses di browser Anda<br>dan tidak dikirim ke server lain.</div>
+    </header>
+
+    <section class="hero">
+        <div>
+            <p class="eyebrow">Kalkulator logbook KKN</p>
+            <h1>Hitung JKEM dari logbook.</h1>
+            <p class="hero-copy">Login ke SIPBPM UNHAS, salin data logbook, tempelkan di sini, lalu lihat total JKEM Anda.</p>
+        </div>
+        <div class="hero-note"><strong>Mulai dari login.</strong><span>Pastikan akun KKN sudah aktif di browser yang sama sebelum mengambil data.</span></div>
+    </section>
+
+    <section class="login-alert" aria-label="Peringatan login wajib">
+        <div class="alert-icon">!</div>
+        <div><h2>Wajib login sebelum mengambil data</h2><p>Buka SIPBPM UNHAS dan pastikan akun KKN Anda sudah <b>berhasil login di browser yang sama</b>. Setelah itu, kembali ke sini dan lanjutkan ke tombol berikut.</p></div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading"><h2>Cara pakai</h2><p>4 langkah sederhana</p></div>
+        <div class="steps" aria-label="Urutan penggunaan">
+            <div class="step"><span class="step-number">1</span><div class="step-copy"><strong>Login</strong><span>Masuk ke SIPBPM UNHAS</span></div></div>
+            <div class="step"><span class="step-number">2</span><div class="step-copy"><strong>Buka data</strong><span>Ambil respons logbook</span></div></div>
+            <div class="step"><span class="step-number">3</span><div class="step-copy"><strong>Salin JSON</strong><span>Copy seluruh teks</span></div></div>
+            <div class="step"><span class="step-number">4</span><div class="step-copy"><strong>Hitung</strong><span>Tempel dan proses</span></div></div>
+        </div>
+        <button class="source-button" onclick="bukaSumberData()"><span><strong>Sudah login? Buka halaman data logbook</strong><small>Halaman akan terbuka di tab baru.</small></span><span class="arrow" aria-hidden="true">&rarr;</span></button>
+        <p class="helper">Jika yang muncul adalah halaman login, selesaikan login dulu, lalu klik tombol ini kembali.</p>
+
+        <div class="os-switcher" role="tablist" aria-label="Pilih sistem operasi">
+            <button class="tab-btn active windows" role="tab" aria-selected="true" onclick="switchTab('win')">Windows</button>
+            <button class="tab-btn mac" role="tab" aria-selected="false" onclick="switchTab('mac')">MacBook</button>
+        </div>
+        <div id="content-win" class="tab-content active" role="tabpanel"><ol><li>Di tab baru, Anda akan melihat teks data berformat JSON.</li><li>Klik area teks, tekan <kbd>Ctrl</kbd> + <kbd>A</kbd>, lalu <kbd>Ctrl</kbd> + <kbd>C</kbd>.</li><li>Kembali ke halaman ini dan tempelkan data pada kotak di bawah.</li></ol></div>
+        <div id="content-mac" class="tab-content" role="tabpanel"><ol><li>Di tab baru, Anda akan melihat teks data berformat JSON.</li><li>Klik area teks, tekan <kbd>Cmd</kbd> + <kbd>A</kbd>, lalu <kbd>Cmd</kbd> + <kbd>C</kbd>.</li><li>Kembali ke halaman ini dan tempelkan data pada kotak di bawah.</li></ol></div>
+    </section>
+
+    <section class="input-panel">
+        <label for="jsonInput">Tempel data JSON logbook</label>
+        <p class="field-hint">Salin seluruh isi respons dari tab data, lalu tempel di sini.</p>
+        <textarea id="jsonInput" placeholder="Tempel data JSON di sini…"></textarea>
+        <div class="input-footer"><span class="field-hint">Data hanya diproses di perangkat ini.</span><button class="process-button" onclick="prosesData()">Hitung total JKEM &rarr;</button></div>
+        <div id="errorMessage" class="error-message" role="alert">Data belum terbaca. Pastikan seluruh teks JSON dari halaman logbook sudah disalin, lalu coba lagi.</div>
+    </section>
+
+    <section class="dashboard-grid" id="dashboard" aria-live="polite">
+        <div class="metric"><div class="metric-label">Total logbook</div><div id="totalLogbook" class="metric-value">0</div></div>
+        <div class="metric"><div class="metric-label">Logbook dengan JKEM</div><div id="totalValidJkem" class="metric-value">0</div></div>
+        <div class="metric highlight"><div class="metric-label">Akumulasi JKEM</div><div id="grandTotalJkem" class="metric-value">0.00</div></div>
+    </section>
+
+    <section class="table-section" id="tableSection"><h2>Rincian logbook</h2><table id="resultTable"><thead><tr><th style="width:5%">No</th><th style="width:25%">Judul</th><th style="width:50%">Tanggal &amp; waktu</th><th style="width:20%">Nilai JKEM</th></tr></thead><tbody id="tableBody"></tbody></table></section>
+
+    <footer class="developer">
+        <div>Dikembangkan oleh <span class="developer-name">Fajri Farid</span></div>
+        <nav class="developer-links" aria-label="Tautan developer">
+            <a href="https://fajrifarid.com" target="_blank" rel="noopener noreferrer">Web</a>
+            <a href="https://www.linkedin.com/in/muhfajrifarid/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://www.instagram.com/fajri_farid/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </nav>
+    </footer>
+</main>
+<script src="./script.js" defer></script>
+</body>
+</html>
