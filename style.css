@@ -91,6 +91,22 @@ textarea:focus { border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(121,26,
 .metric.highlight { border-top-color: var(--gold); }
 .metric-label { color: var(--muted); font-size: 11px; font-weight: 750; letter-spacing: .09em; text-transform: uppercase; }
 .metric-value { margin-top: 5px; color: var(--maroon-dark); font-family: Georgia, serif; font-size: 31px; }
+.approval-summary { display: none; padding: 26px 30px; margin: 0 0 20px; border: 1px solid var(--line); background: var(--paper); }
+.summary-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 18px; }
+.summary-heading h2 { color: var(--maroon-dark); font-family: Georgia, serif; font-size: 25px; font-weight: 500; }
+.summary-heading p { margin: 0; color: var(--muted); font-size: 12px; }
+.approval-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.approval-card { min-width: 0; padding: 15px; border-left: 3px solid var(--line); background: #fffaf7; }
+.approval-card.approved { border-left-color: var(--green); }
+.approval-card.pending { border-left-color: #c9952e; }
+.approval-card.target { border-left-color: var(--maroon); }
+.approval-card.remaining { border-left-color: #b75d4a; }
+.approval-label { display: block; color: var(--muted); font-size: 11px; font-weight: 750; line-height: 1.25; text-transform: uppercase; }
+.approval-card strong { display: block; margin-top: 6px; color: var(--maroon-dark); font-family: Georgia, serif; font-size: 23px; line-height: 1.1; }
+.approval-card small { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; }
+.progress-track { height: 8px; margin-top: 20px; overflow: hidden; background: #eee3df; }
+.progress-track span { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--maroon), var(--gold)); transition: width .35s ease; }
+.summary-note { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
 .table-section { display: none; overflow-x: auto; padding: 26px 30px; border: 1px solid var(--line); background: var(--paper); }
 .table-section h2 { margin-bottom: 18px; color: var(--maroon-dark); font-family: Georgia, serif; font-size: 25px; font-weight: 500; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -102,6 +118,10 @@ tr:hover td { background: #fcf7f4; }
 .badge { display: inline-block; padding: 4px 8px; border-radius: 20px; font-size: 12px; font-weight: 750; }
 .badge-jkem { color: #205f49; background: #e4f2eb; }
 .badge-empty { color: #a14343; background: #fae9e9; }
+.status-badge { display: inline-block; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 750; white-space: nowrap; }
+.status-approved { color: #205f49; background: #e4f2eb; }
+.status-pending { color: #805b12; background: #fff2cf; }
+.status-rejected { color: #9b3030; background: #fae2e2; }
 
 .developer { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 22px 0 0; margin-top: 32px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
 .developer-name { color: var(--maroon-dark); font-weight: 800; }
@@ -120,10 +140,13 @@ button:focus-visible { outline: 3px solid rgba(201,149,46,.55); outline-offset: 
     .panel, .input-panel, .table-section { padding: 22px 18px; }
     .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .dashboard-grid { grid-template-columns: 1fr; }
+    .approval-summary { padding: 22px 18px; }
+    .approval-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .input-footer { align-items: stretch; flex-direction: column; }
     .process-button { width: 100%; }
     .developer { align-items: flex-start; flex-direction: column; gap: 10px; }
     .developer-links { justify-content: flex-start; }
 }
 @media (max-width: 430px) { .steps { grid-template-columns: 1fr; } }
+@media (max-width: 430px) { .approval-grid { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { *, html { scroll-behavior: auto !important; transition: none !important; } }

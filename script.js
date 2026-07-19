@@ -55,6 +55,45 @@ function formatTanggal(value) {
     return `<div class="date-cell"><span>${escapeHtml(tanggal)}</span><span class="date-separator">·</span><span>Jam: ${escapeHtml(waktu)}</span>${jkemHtml}</div>`;
 }
 
+function getApprovalType(item) {
+    const rawStatus = [
+        item.status,
+        item.status_persetujuan,
+        item.approval_status,
+        item.status_approval,
+        item.approved
+    ].find((value) => value !== undefined && value !== null && value !== '');
+
+    const status = String(rawStatus ?? '')
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/&nbsp;|&amp;/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .toLowerCase()
+        .trim();
+
+    if (/belum\s*disetujui|tidak\s*disetujui|menunggu|pending|diajukan|proses/.test(status)) {
+        return 'pending';
+    }
+
+    if (/tolak|ditolak|reject|revisi|perbaikan/.test(status)) {
+        return 'rejected';
+    }
+
+    if (/dierima|diterima|disetujui|disetuj|approve|approved|terima|^1$|^true$/.test(status)) {
+        return 'approved';
+    }
+
+    return 'pending';
+}
+
+function getStatusLabel(type) {
+    return {
+        approved: 'Disetujui',
+        rejected: 'Perlu diperbaiki',
+        pending: 'Belum disetujui'
+    }[type];
+}
+
 function prosesData() {
     let inputRaw = document.getElementById('jsonInput').value.trim();
     const errorDiv = document.getElementById('errorMessage');
@@ -85,13 +124,20 @@ function prosesData() {
         }
 
         let totalJKEM = 0;
+        let approvedJKEM = 0;
+        let pendingJKEM = 0;
         let countMatched = 0;
+        let approvedCount = 0;
+        let pendingCount = 0;
         let tableRowsHtml = '';
 
         items.forEach((item, index) => {
             const judul = item.judul || '-';
             const tanggalStr = item.tanggal || '-';
             const match = tanggalStr.match(/JKEM:\s*([\d.]+)/);
+            const approvalType = getApprovalType(item);
+            const statusLabel = getStatusLabel(approvalType);
+            const statusHtml = `<span class="status-badge status-${approvalType}">${statusLabel}</span>`;
             let nilaiJkem = 0;
             let badgeHtml = '<span class="badge badge-empty">0.00</span>';
 
@@ -99,24 +145,45 @@ function prosesData() {
                 nilaiJkem = parseFloat(match[1]);
                 totalJKEM += nilaiJkem;
                 countMatched++;
+                if (approvalType === 'approved') {
+                    approvedJKEM += nilaiJkem;
+                    approvedCount++;
+                } else {
+                    pendingJKEM += nilaiJkem;
+                    pendingCount++;
+                }
                 badgeHtml = `<span class="badge badge-jkem">+ ${nilaiJkem.toFixed(2)}</span>`;
             }
 
-            tableRowsHtml += `<tr><td>${index + 1}</td><td><b>${escapeHtml(judul)}</b></td><td>${formatTanggal(tanggalStr)}</td><td>${badgeHtml}</td></tr>`;
+            tableRowsHtml += `<tr><td>${index + 1}</td><td><b>${escapeHtml(judul)}</b></td><td>${formatTanggal(tanggalStr)}</td><td>${statusHtml}</td><td>${badgeHtml}</td></tr>`;
         });
 
         document.getElementById('totalLogbook').innerText = items.length;
         document.getElementById('totalValidJkem').innerText = countMatched;
         document.getElementById('grandTotalJkem').innerText = totalJKEM.toFixed(2);
+        const targetJKEM = 180;
+        const remainingJKEM = Math.max(targetJKEM - approvedJKEM, 0);
+        const progress = Math.min((approvedJKEM / targetJKEM) * 100, 100);
+        const approvalSummary = document.getElementById('approvalSummary');
+        document.getElementById('approvedJkem').innerText = `${approvedJKEM.toFixed(2)} jam`;
+        document.getElementById('pendingJkem').innerText = `${pendingJKEM.toFixed(2)} jam`;
+        document.getElementById('approvedCount').innerText = `${approvedCount} logbook`;
+        document.getElementById('pendingCount').innerText = `${pendingCount} logbook`;
+        document.getElementById('targetJkem').innerText = `${targetJKEM.toFixed(2)} jam`;
+        document.getElementById('remainingJkem').innerText = `${remainingJKEM.toFixed(2)} jam`;
+        document.getElementById('approvalStatus').innerText = remainingJKEM > 0 ? 'Belum mencapai target' : 'Target tercapai';
+        document.getElementById('approvalProgress').style.width = `${progress}%`;
         document.getElementById('tableBody').innerHTML = tableRowsHtml;
 
         dashboard.style.display = 'grid';
+        approvalSummary.style.display = 'block';
         tableSection.style.display = 'block';
         dashboard.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
         errorDiv.textContent = 'Data belum terbaca. Pastikan seluruh teks JSON dari halaman logbook sudah disalin, lalu coba lagi.';
         errorDiv.style.display = 'block';
         dashboard.style.display = 'none';
+        document.getElementById('approvalSummary').style.display = 'none';
         tableSection.style.display = 'none';
         console.error(error);
     }

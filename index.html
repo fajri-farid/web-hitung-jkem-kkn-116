@@ -61,7 +61,19 @@
         <div class="metric highlight"><div class="metric-label">Akumulasi JKEM</div><div id="grandTotalJkem" class="metric-value">0.00</div></div>
     </section>
 
-    <section class="table-section" id="tableSection"><h2>Rincian logbook</h2><table id="resultTable"><thead><tr><th style="width:5%">No</th><th style="width:25%">Judul</th><th style="width:50%">Tanggal &amp; waktu</th><th style="width:20%">Nilai JKEM</th></tr></thead><tbody id="tableBody"></tbody></table></section>
+    <section class="approval-summary" id="approvalSummary" aria-live="polite">
+        <div class="summary-heading"><h2>Status capaian JKEM</h2><p>Persetujuan dosen</p></div>
+        <div class="approval-grid">
+            <div class="approval-card approved"><span class="approval-label">Sudah disetujui</span><strong id="approvedJkem">0.00 jam</strong><small id="approvedCount">0 logbook</small></div>
+            <div class="approval-card pending"><span class="approval-label">Belum disetujui</span><strong id="pendingJkem">0.00 jam</strong><small id="pendingCount">0 logbook</small></div>
+            <div class="approval-card target"><span class="approval-label">Target JKEM KKN</span><strong id="targetJkem">180.00 jam</strong><small>Standar mata kuliah KKN</small></div>
+            <div class="approval-card remaining"><span class="approval-label">Sisa menuju target</span><strong id="remainingJkem">180.00 jam</strong><small id="approvalStatus">Belum mencapai target</small></div>
+        </div>
+        <div class="progress-track" aria-label="Progress JKEM disetujui"><span id="approvalProgress"></span></div>
+        <p class="summary-note">Capaian dihitung dari JKEM yang berstatus disetujui. JKEM yang masih menunggu persetujuan belum masuk ke capaian.</p>
+    </section>
+
+    <section class="table-section" id="tableSection"><h2>Rincian logbook</h2><table id="resultTable"><thead><tr><th style="width:5%">No</th><th style="width:23%">Judul</th><th style="width:42%">Tanggal &amp; waktu</th><th style="width:15%">Status</th><th style="width:15%">Nilai JKEM</th></tr></thead><tbody id="tableBody"></tbody></table></section>
 
     <footer class="developer">
         <div>Dikembangkan oleh <span class="developer-name">Fajri Farid</span></div>
