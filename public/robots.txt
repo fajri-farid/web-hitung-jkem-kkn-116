@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://web-hitung-jkem-kkn-116.vercel.app/sitemap.xml

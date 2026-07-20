@@ -188,3 +188,8 @@ function prosesData() {
         console.error(error);
     }
 }
+
+// Fungsi dipanggil oleh tombol HTML, sehingga tetap diekspos saat file dibundel sebagai modul.
+window.switchTab = switchTab;
+window.bukaSumberData = bukaSumberData;
+window.prosesData = prosesData;
