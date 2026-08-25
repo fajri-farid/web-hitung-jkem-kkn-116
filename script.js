@@ -2,6 +2,51 @@ window.addEventListener('DOMContentLoaded', () => {
     if (navigator.platform && navigator.platform.toUpperCase().includes('MAC')) {
         switchTab('mac');
     }
+
+    const promoModal = document.getElementById('promoModal');
+    const closePromoBtn = document.getElementById('closePromoModal');
+    
+    if (promoModal && closePromoBtn) {
+        const openModal = () => {
+            promoModal.showModal();
+            document.body.classList.add('modal-open');
+            document.documentElement.classList.add('modal-open');
+        };
+
+        const closeModal = () => {
+            promoModal.close();
+            document.body.classList.remove('modal-open');
+            document.documentElement.classList.remove('modal-open');
+        };
+
+        setTimeout(() => {
+            openModal();
+        }, 1500);
+
+        closePromoBtn.addEventListener('click', () => {
+            closeModal();
+        });
+
+        promoModal.addEventListener('click', (e) => {
+            const dialogDimensions = promoModal.getBoundingClientRect();
+            if (
+                e.clientX < dialogDimensions.left || e.clientX > dialogDimensions.right ||
+                e.clientY < dialogDimensions.top || e.clientY > dialogDimensions.bottom
+            ) {
+                closeModal();
+            }
+        });
+
+        promoModal.addEventListener('close', () => {
+            document.body.classList.remove('modal-open');
+            document.documentElement.classList.remove('modal-open');
+        });
+
+        promoModal.addEventListener('cancel', () => {
+            document.body.classList.remove('modal-open');
+            document.documentElement.classList.remove('modal-open');
+        });
+    }
 });
 
 function switchTab(os) {
