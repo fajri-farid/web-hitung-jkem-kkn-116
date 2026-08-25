@@ -54,9 +54,9 @@ h1 { max-width: 650px; color: var(--maroon-dark); font-family: Georgia, "Times N
 .step strong { display: block; color: var(--ink); font-size: 13px; line-height: 1.25; }
 .step-copy span { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; line-height: 1.35; }
 
-.source-button, .process-button { border: 0; cursor: pointer; color: white; font: inherit; font-weight: 750; transition: transform .2s, background .2s, box-shadow .2s; }
+.source-button, .process-button { border: 0; cursor: pointer; color: white; font: inherit; font-weight: 750; transition: transform .15s, background .15s, box-shadow .15s; }
 .source-button { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 17px 20px; color: white; background: var(--maroon); text-align: left; }
-.source-button:hover { background: var(--maroon-dark); box-shadow: 0 8px 20px rgba(121,26,43,.2); transform: translateY(-1px); }
+.source-button:hover { background: var(--maroon-dark); box-shadow: 0 4px 10px rgba(121,26,43,.12); transform: translateY(-1px); }
 .source-button small { display: block; margin-top: 2px; color: #f4cbd2; font-size: 12px; font-weight: 500; }
 .arrow { font-size: 23px; font-weight: 400; }
 .helper { margin: 13px 0 0; color: var(--muted); font-size: 12px; }
@@ -191,7 +191,7 @@ body:has(dialog[open]) {
     object-fit: cover;
     margin: 0 auto 20px;
     border: 3px solid var(--gold);
-    box-shadow: 0 6px 16px rgba(201, 149, 46, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .modal-text {
@@ -241,8 +241,17 @@ body:has(dialog[open]) {
 }
 
 .link-traktir {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-weight: 750;
     color: var(--maroon) !important;
+}
+
+.link-icon, .btn-icon {
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .modal-actions {
@@ -264,17 +273,15 @@ body:has(dialog[open]) {
     text-decoration: none;
     font-weight: 750;
     font-size: 14px;
-    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    transition: background 0.15s, transform 0.15s;
     border: 1px solid var(--maroon-dark);
-    box-shadow: 0 4px 12px rgba(121, 26, 43, 0.18);
 }
 
 .btn-cta:hover {
     background: var(--maroon-dark);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     color: white;
     text-decoration: none;
-    box-shadow: 0 6px 16px rgba(121, 26, 43, 0.25);
 }
 
 .btn-secondary-cta {
