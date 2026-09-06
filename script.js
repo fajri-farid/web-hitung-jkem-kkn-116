@@ -1,3 +1,13 @@
+// Konfigurasi endpoint Google Apps Script Web App untuk data feedback.
+// Nilai dibaca otomatis dari file .env (VITE_GOOGLE_SCRIPT_FEEDBACK_URL)
+const GOOGLE_SCRIPT_FEEDBACK_URL = import.meta.env.VITE_GOOGLE_SCRIPT_FEEDBACK_URL || '';
+
+const feedbackState = {
+    manualTime: null,
+    webTime: null,
+    rating: null
+};
+
 window.addEventListener('DOMContentLoaded', () => {
     if (navigator.platform && navigator.platform.toUpperCase().includes('MAC')) {
         switchTab('mac');
@@ -47,7 +57,166 @@ window.addEventListener('DOMContentLoaded', () => {
             document.documentElement.classList.remove('modal-open');
         });
     }
+
+    initFeedbackModal();
 });
+
+function initFeedbackModal() {
+    const feedbackModal = document.getElementById('feedbackModal');
+    const submitBtn = document.getElementById('submitFeedbackBtn');
+    const feedbackForm = document.getElementById('feedbackForm');
+    const feedbackSuccess = document.getElementById('feedbackSuccess');
+    const closeFeedbackSuccessBtn = document.getElementById('closeFeedbackSuccessBtn');
+    let autoCloseTimer = null;
+
+    if (!feedbackModal) return;
+
+    const closeSuccessModal = () => {
+        if (autoCloseTimer) {
+            clearTimeout(autoCloseTimer);
+            autoCloseTimer = null;
+        }
+        feedbackModal.close();
+        document.body.classList.remove('modal-open');
+        document.documentElement.classList.remove('modal-open');
+    };
+
+    if (closeFeedbackSuccessBtn) {
+        closeFeedbackSuccessBtn.addEventListener('click', closeSuccessModal);
+    }
+
+    feedbackModal.addEventListener('click', (e) => {
+        // Jika sudah selesai mengisi, izinkan klik di luar area modal untuk menutup
+        if (feedbackSuccess && feedbackSuccess.style.display === 'block') {
+            const rect = feedbackModal.getBoundingClientRect();
+            if (
+                e.clientX < rect.left || e.clientX > rect.right ||
+                e.clientY < rect.top || e.clientY > rect.bottom
+            ) {
+                closeSuccessModal();
+            }
+        }
+    });
+
+    feedbackModal.addEventListener('close', () => {
+        if (autoCloseTimer) {
+            clearTimeout(autoCloseTimer);
+            autoCloseTimer = null;
+        }
+        document.body.classList.remove('modal-open');
+        document.documentElement.classList.remove('modal-open');
+    });
+
+    feedbackModal.addEventListener('cancel', (e) => {
+        // Jika sudah selesai submit, izinkan tutup via tombol Escape
+        if (feedbackSuccess && feedbackSuccess.style.display === 'block') {
+            closeSuccessModal();
+            return;
+        }
+        e.preventDefault();
+    });
+
+    // Pilihan chip untuk Pertanyaan 1 & 2
+    document.querySelectorAll('.feedback-chips').forEach((container) => {
+        const questionKey = container.getAttribute('data-question');
+        const chips = container.querySelectorAll('.feedback-chip');
+        chips.forEach((chip) => {
+            chip.addEventListener('click', () => {
+                chips.forEach((c) => c.classList.remove('active'));
+                chip.classList.add('active');
+                feedbackState[questionKey] = chip.getAttribute('data-value');
+                checkFormValidity();
+            });
+        });
+    });
+
+    // Pilihan emoji rating untuk Pertanyaan 3
+    const ratingContainer = document.querySelector('.feedback-rating');
+    if (ratingContainer) {
+        const ratingButtons = ratingContainer.querySelectorAll('.rating-btn');
+        ratingButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                ratingButtons.forEach((b) => b.classList.remove('active'));
+                btn.classList.add('active');
+                feedbackState.rating = btn.getAttribute('data-value');
+                checkFormValidity();
+            });
+        });
+    }
+
+    function checkFormValidity() {
+        const isValid = Boolean(feedbackState.manualTime && feedbackState.webTime && feedbackState.rating);
+        if (submitBtn) {
+            submitBtn.disabled = !isValid;
+        }
+    }
+
+    if (submitBtn) {
+        submitBtn.addEventListener('click', async () => {
+            if (!feedbackState.manualTime || !feedbackState.webTime || !feedbackState.rating) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>Mengirim jawaban…</span>';
+
+            const payload = {
+                timestamp: new Date().toISOString(),
+                manualTime: feedbackState.manualTime,
+                webTime: feedbackState.webTime,
+                rating: feedbackState.rating
+            };
+
+            try {
+                if (GOOGLE_SCRIPT_FEEDBACK_URL && GOOGLE_SCRIPT_FEEDBACK_URL.trim() !== '') {
+                    await fetch(GOOGLE_SCRIPT_FEEDBACK_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    console.info('[Feedback JKEM] Payload tersimpan lokal (URL belum diisi di GOOGLE_SCRIPT_FEEDBACK_URL):', payload);
+                }
+            } catch (err) {
+                console.error('[Feedback JKEM] Gagal mengirim data:', err);
+            }
+
+            // Simpan status di localStorage agar tidak meminta kembali
+            localStorage.setItem('jkem_feedback_submitted', 'true');
+
+            if (feedbackForm) feedbackForm.style.display = 'none';
+            if (feedbackSuccess) feedbackSuccess.style.display = 'block';
+
+            // Auto-close selama 15 detik memberi waktu santai bagi user membaca pesan
+            autoCloseTimer = setTimeout(() => {
+                closeSuccessModal();
+            }, 15000);
+        });
+    }
+}
+
+function triggerFeedbackModal() {
+    if (localStorage.getItem('jkem_feedback_submitted') === 'true') {
+        return;
+    }
+    if (sessionStorage.getItem('jkem_feedback_dismissed') === 'true') {
+        return;
+    }
+
+    const feedbackModal = document.getElementById('feedbackModal');
+    if (!feedbackModal) return;
+
+    setTimeout(() => {
+        const promoModal = document.getElementById('promoModal');
+        if (promoModal && promoModal.open) {
+            return;
+        }
+        feedbackModal.showModal();
+        document.body.classList.add('modal-open');
+        document.documentElement.classList.add('modal-open');
+    }, 1800);
+}
 
 function switchTab(os) {
     document.querySelectorAll('.tab-btn').forEach((button) => {
@@ -224,6 +393,8 @@ function prosesData() {
         approvalSummary.style.display = 'block';
         tableSection.style.display = 'block';
         dashboard.scrollIntoView({ behavior: 'smooth' });
+
+        triggerFeedbackModal();
     } catch (error) {
         errorDiv.textContent = 'Data belum terbaca. Pastikan seluruh teks JSON dari halaman logbook sudah disalin, lalu coba lagi.';
         errorDiv.style.display = 'block';

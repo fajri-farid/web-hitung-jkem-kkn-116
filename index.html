@@ -151,6 +151,82 @@
             </div>
         </div>
     </dialog>
+
+    <dialog id="feedbackModal" class="promo-modal feedback-modal" aria-labelledby="feedbackTitle" aria-describedby="feedbackDesc">
+        <div class="modal-content feedback-content">
+            <div class="feedback-header">
+                <span class="feedback-badge">Evaluasi 15 Detik</span>
+                <h2 id="feedbackTitle">Bantu saya evaluasi alat ini</h2>
+                <p id="feedbackDesc">Cukup 3 pilihan singkat untuk melihat seberapa efektif website ini membantumu. Anonim &amp; tanpa data pribadi.</p>
+            </div>
+
+            <form id="feedbackForm" class="feedback-form" onsubmit="event.preventDefault();">
+                <!-- Pertanyaan 1 -->
+                <div class="feedback-group">
+                    <label class="feedback-label">1. Berapa lama biasanya kamu menghitung manual JKEM dari logbook?</label>
+                    <div class="feedback-chips" data-question="manualTime">
+                        <button type="button" class="feedback-chip" data-value="< 5 menit">&lt; 5 menit</button>
+                        <button type="button" class="feedback-chip" data-value="5–10 menit">5–10 menit</button>
+                        <button type="button" class="feedback-chip" data-value="10–20 menit">10–20 menit</button>
+                        <button type="button" class="feedback-chip" data-value="20–30 menit">20–30 menit</button>
+                    </div>
+                </div>
+
+                <!-- Pertanyaan 2 -->
+                <div class="feedback-group">
+                    <label class="feedback-label">2. Pakai website ini, berapa lama sampai hasil total JKEM kamu keluar?</label>
+                    <div class="feedback-chips" data-question="webTime">
+                        <button type="button" class="feedback-chip" data-value="< 30 detik">&lt; 30 detik</button>
+                        <button type="button" class="feedback-chip" data-value="30 detik – 1 menit">30 detik – 1 menit</button>
+                        <button type="button" class="feedback-chip" data-value="1–2 menit">1–2 menit</button>
+                        <button type="button" class="feedback-chip" data-value="2–5 menit">2–5 menit</button>
+                    </div>
+                </div>
+
+                <!-- Pertanyaan 3 -->
+                <div class="feedback-group">
+                    <label class="feedback-label">3. Bagaimana pengalamanmu memakai website kalkulator ini?</label>
+                    <div class="feedback-rating" data-question="rating">
+                        <button type="button" class="rating-btn" data-value="Sangat buruk" title="Sangat buruk">
+                            <span class="rating-emoji">😡</span>
+                            <span class="rating-text">Sangat buruk</span>
+                        </button>
+                        <button type="button" class="rating-btn" data-value="Buruk" title="Buruk">
+                            <span class="rating-emoji">🙁</span>
+                            <span class="rating-text">Buruk</span>
+                        </button>
+                        <button type="button" class="rating-btn" data-value="Biasa saja" title="Biasa saja">
+                            <span class="rating-emoji">😐</span>
+                            <span class="rating-text">Biasa saja</span>
+                        </button>
+                        <button type="button" class="rating-btn" data-value="Baik" title="Baik">
+                            <span class="rating-emoji">🙂</span>
+                            <span class="rating-text">Baik</span>
+                        </button>
+                        <button type="button" class="rating-btn" data-value="Sangat baik" title="Sangat baik">
+                            <span class="rating-emoji">🤩</span>
+                            <span class="rating-text">Sangat baik</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="feedback-actions">
+                    <button type="button" id="submitFeedbackBtn" class="btn-cta btn-submit-feedback" disabled>
+                        <span>Kirim tanggapan</span>
+                    </button>
+                </div>
+            </form>
+
+            <div id="feedbackSuccess" class="feedback-success" style="display: none;">
+                <div class="success-emotion-icon" aria-hidden="true">🫶</div>
+                <h3>Makasih banyak ya!</h3>
+                <p>Masukan darimu ngebantu banget buat evaluasi project personal ini. Semangat terus dalam ber-aktifitas!</p>
+                <button type="button" id="closeFeedbackSuccessBtn" class="btn-cta btn-close-success">
+                    <span>Lihat Hasil JKEM</span>
+                </button>
+            </div>
+        </div>
+    </dialog>
 </main>
 <script type="module" src="./script.js"></script>
 <script type="module" src="./analytics.js"></script>
